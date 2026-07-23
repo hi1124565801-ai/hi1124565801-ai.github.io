@@ -1,4 +1,4 @@
-name: Bootstrap and deploy portfolio
+name: Sync and deploy portfolio update
 
 on:
   push:
@@ -22,17 +22,20 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Bootstrap verified source
-        if: ${{ hashFiles('package.json') == '' }}
+      - name: Sync verified source update
         run: |
-          curl --fail --location --retry 3             https://yunmoxiao-field-notes.fairy-gnat-3713.chatgpt.site/github-source.tar.gz             --output /tmp/github-source.tar.gz
-          tar -xzf /tmp/github-source.tar.gz -C .
+          curl --fail --location --retry 3 https://yunmoxiao-field-notes.fairy-gnat-3713.chatgpt.site/github-source.tar.gz --output /tmp/github-source.tar.gz
+          rm -rf /tmp/site-source
+          tar -xzf /tmp/github-source.tar.gz -C /tmp
+          rsync -a --delete --exclude ".git/" --exclude ".github/workflows/deploy-pages.yml" /tmp/site-source/ ./
           git checkout -- .github/workflows/deploy-pages.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Publish Yunmoxiao Tian academic portfolio source"
-          git push origin main
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Yunmoxiao Tian portfolio"
+            git push origin main
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -47,10 +50,8 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
-      - name: Build static portfolio
+      - name: Build static site
         run: pnpm run build:github
 
       - name: Upload Pages artifact
