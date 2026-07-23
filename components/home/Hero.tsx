@@ -18,13 +18,13 @@ export function Hero() {
           <p>Expected Graduation: June 2027</p>
         </div>
         <p className="hero-position">
-          My research sits at the intersection of cultural sociology,
-          communication, and media and technology. I study how social,
-          organizational, and technological systems shape the ways people
-          encounter, participate in, and make sense of culture. My current projects
-          examine how a multi-city bar organization structures and reproduces
-          participant-produced sociability; how brands maintain visual and message
-          consistency across digital platforms; and how AI-supported writing systems
+          My research sits at the intersection of{" "}
+          <strong>cultural sociology, communication, and media and technology</strong>.
+          I study how <strong>social, organizational, and technological systems</strong>{" "}
+          shape the ways people encounter, participate in, and make sense of culture.
+          My current projects examine <strong>participant-produced sociability</strong>{" "}
+          in a multi-city bar organization, <strong>brand consistency</strong> across
+          digital platforms, and how <strong>AI-supported writing systems</strong>{" "}
           reorganize journalistic knowledge production.
         </p>
         <p className="hero-intro">

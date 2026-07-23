@@ -95,7 +95,10 @@ export function InternationalExperienceMap({
             Preparing the academic map…
           </div>
         )}
-        <p>Five academic contexts across Europe, North America, and Southeast Asia.</p>
+        <p>
+          Six academic contexts across China, Europe, North America, and Southeast
+          Asia.
+        </p>
       </div>
 
       <ol className="experience-map-list">

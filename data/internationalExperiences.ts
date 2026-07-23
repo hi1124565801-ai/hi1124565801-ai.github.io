@@ -11,6 +11,17 @@ export type InternationalExperience = {
 
 export const internationalExperiences: InternationalExperience[] = [
   {
+    id: "peking-university",
+    institution: "Peking University",
+    role: "B.A. in English Language and Literature; Second Major in Sociology",
+    location: "Beijing",
+    dates: "2022–2027",
+    coordinates: [116.3109, 39.9928],
+    category: "Study",
+    description:
+      "Combining literary study and sociological training with qualitative fieldwork, interviews, textual and visual analysis, and mixed-method research.",
+  },
+  {
     id: "amsterdam",
     institution: "University of Amsterdam",
     role: "Research Assistant, ERC-funded China–Africa Fashion Power project",

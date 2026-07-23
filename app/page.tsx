@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ContactCTA } from "@/components/home/ContactCTA";
 import { Hero } from "@/components/home/Hero";
 import { Honors } from "@/components/home/Honors";
 import { InternationalExperience } from "@/components/home/InternationalExperience";
@@ -19,7 +18,6 @@ export default function Home() {
       <PortfolioDirectory />
       <InternationalExperience />
       <Honors />
-      <ContactCTA />
     </PageShell>
   );
 }

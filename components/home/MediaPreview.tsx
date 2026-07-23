@@ -6,10 +6,10 @@ export function MediaPreview() {
     <section className="media-preview section-pad" aria-labelledby="media-preview-heading">
       <div className="section-head">
         <div>
-          <p className="section-kicker">Media & Features</p>
-          <h2 id="media-preview-heading">Selected institutional profiles</h2>
+          <p className="section-kicker">Media Coverage</p>
+          <h2 id="media-preview-heading">Profiles and stories about my work</h2>
         </div>
-        <Link href="/media" className="text-link">All features <span>→</span></Link>
+        <Link href="/media" className="text-link">All coverage <span>→</span></Link>
       </div>
       <div className="media-preview-list">
         {mediaFeatures.slice(0, 3).map((feature, index) => (

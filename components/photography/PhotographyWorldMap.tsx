@@ -36,6 +36,8 @@ export function PhotographyWorldMap() {
     zoom: 1,
   });
   const [touchMoveEnabled, setTouchMoveEnabled] = useState(false);
+  const [mapViewportWidth, setMapViewportWidth] = useState(800);
+  const mapCanvasRef = useRef<HTMLDivElement | null>(null);
   const lastMarker = useRef<SVGGElement | null>(null);
   const animationFrame = useRef<number | null>(null);
   const positionRef = useRef(position);
@@ -53,6 +55,22 @@ export function PhotographyWorldMap() {
     },
     [],
   );
+
+  useEffect(() => {
+    const canvas = mapCanvasRef.current;
+    if (!canvas) return;
+
+    const updateWidth = () => {
+      const svg = canvas.querySelector("svg");
+      const width = svg?.getBoundingClientRect().width ?? canvas.getBoundingClientRect().width;
+      if (width > 0) setMapViewportWidth(width);
+    };
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [mounted]);
 
   const animateView = useCallback(
     (target: { coordinates: [number, number]; zoom: number }) => {
@@ -173,7 +191,42 @@ export function PhotographyWorldMap() {
           </button>
         </div>
       </div>
-      <div className={`map-canvas ${touchMoveEnabled ? "map-canvas--active" : ""}`}>
+      <div
+        ref={mapCanvasRef}
+        className={`map-canvas ${touchMoveEnabled ? "map-canvas--active" : ""}`}
+        onClickCapture={(event) => {
+          if (event.detail === 0) return;
+          const target = event.target;
+          if (!(target instanceof Element) || !target.closest(".map-marker")) return;
+
+          const markers = Array.from(
+            event.currentTarget.querySelectorAll<SVGGElement>(".map-marker"),
+          );
+          const nearest = markers.reduce<{
+            element: SVGGElement;
+            distance: number;
+          } | null>((current, element) => {
+            const rect = element.getBoundingClientRect();
+            const distance = Math.hypot(
+              event.clientX - (rect.left + rect.width / 2),
+              event.clientY - (rect.top + rect.height / 2),
+            );
+            return !current || distance < current.distance
+              ? { element, distance }
+              : current;
+          }, null);
+          const id = nearest?.element.dataset.locationId;
+          const location = mappedPhotographyLocations.find((item) => item.id === id);
+          const coordinates = location
+            ? getPhotographyLocationCoordinates(location)
+            : undefined;
+          if (!id || !location || !coordinates) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          openLocation(id, nearest.element, coordinates);
+        }}
+      >
         <ComposableMap
           projection="geoEqualEarth"
           projectionConfig={{ scale: 162, center: [4, 12] }}
@@ -232,10 +285,12 @@ export function PhotographyWorldMap() {
               const hovered = hoveredId === location.id;
               const color = index % 3 === 0 ? "#B66B53" : "#CDA65C";
               const placeLabel = location.coordinates ? location.city : location.country;
+              const markerUnit = 800 / mapViewportWidth / position.zoom;
               return (
                 <Marker key={location.id} coordinates={coordinates}>
                   <g
                     className={`map-marker ${active ? "is-active" : ""}`}
+                    data-location-id={location.id}
                     role="button"
                     tabIndex={0}
                     aria-label={`${placeLabel}. ${location.photos.length} ${
@@ -245,6 +300,7 @@ export function PhotographyWorldMap() {
                     onMouseLeave={() => setHoveredId(null)}
                     onFocus={() => setHoveredId(location.id)}
                     onBlur={() => setHoveredId(null)}
+                    onPointerDown={(event) => event.stopPropagation()}
                     onClick={(event) =>
                       openLocation(location.id, event.currentTarget, coordinates)
                     }
@@ -255,22 +311,32 @@ export function PhotographyWorldMap() {
                       }
                     }}
                   >
-                    <circle r={22 / position.zoom} fill="transparent" />
+                    <circle
+                      r={22 * markerUnit}
+                      fill="transparent"
+                      pointerEvents="all"
+                    />
                     <circle
                       className="marker-ring"
-                      r={(active ? 10 : 8) / position.zoom}
+                      r={(active ? 10 : 8) * markerUnit}
                       fill="none"
                       stroke={color}
-                      strokeWidth={active ? 4 / position.zoom : 0}
+                      strokeWidth={active ? 4 * markerUnit : 0}
                       opacity={active ? 0.38 : 0}
+                      pointerEvents="none"
                     />
                     <circle
-                      r={(hovered || active ? 6.5 : 5) / position.zoom}
+                      r={(hovered || active ? 6.5 : 5) * markerUnit}
                       fill={color}
                       stroke="#173D32"
-                      strokeWidth={1.2 / position.zoom}
+                      strokeWidth={1.2 * markerUnit}
+                      pointerEvents="none"
                     />
-                    <circle r={1.7 / position.zoom} fill="#FBFAF5" />
+                    <circle
+                      r={1.7 * markerUnit}
+                      fill="#FBFAF5"
+                      pointerEvents="none"
+                    />
                   </g>
                   {(hovered || active) && (
                     <foreignObject

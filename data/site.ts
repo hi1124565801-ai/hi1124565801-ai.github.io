@@ -10,7 +10,7 @@ export const siteConfig = {
     { label: "Home", href: "/" },
     { label: "Research", href: "/research" },
     { label: "Writing", href: "/writing" },
-    { label: "Media & Features", href: "/media" },
+    { label: "Media Coverage", href: "/media" },
     { label: "Photography", href: "/photography" },
     { label: "Literary Mapping", href: "/literary-mapping" },
   ],

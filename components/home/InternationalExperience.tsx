@@ -9,10 +9,10 @@ export function InternationalExperience() {
     >
       <div className="section-head">
         <div>
-          <p className="section-kicker">International Academic Experience</p>
-          <h2 id="international-heading">Selected research and study contexts</h2>
+          <p className="section-kicker">Academic Experience</p>
+          <h2 id="international-heading">Where I study and conduct research</h2>
         </div>
-        <p>A concise record; project details remain on the Research page.</p>
+        <p>A concise map of the institutions where I study, exchange, and conduct research.</p>
       </div>
       <InternationalExperienceMap experiences={internationalExperiences} />
     </section>

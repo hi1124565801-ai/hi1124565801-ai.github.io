@@ -430,8 +430,12 @@ main {
   margin-bottom: 1rem;
   color: var(--pine);
   font-family: var(--serif);
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-  line-height: 1.35;
+  font-size: clamp(1.02rem, 1.35vw, 1.26rem);
+  line-height: 1.52;
+}
+
+.hero-position strong {
+  font-weight: 700;
 }
 
 .hero-intro {
